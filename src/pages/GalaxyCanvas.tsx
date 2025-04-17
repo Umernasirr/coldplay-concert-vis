@@ -197,6 +197,35 @@ const GalaxyExperience = () => {
     new Vector3(-8, 10, -5),
   ];
 
+  useEffect(() => {
+    const cleanup = () => {
+      if (fireworksInstanceRef.current) {
+        fireworksInstanceRef.current.stop();
+        fireworksInstanceRef.current = null;
+      }
+
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
+
+      audio.pause();
+      audio.currentTime = 0;
+
+      document.removeEventListener("click", tryPlayAudio);
+      document.removeEventListener("touchstart", tryPlayAudio);
+      document.removeEventListener("keydown", tryPlayAudio);
+    };
+
+    // In case user leaves / refreshes the tab
+    window.addEventListener("beforeunload", cleanup);
+
+    return () => {
+      cleanup();
+      window.removeEventListener("beforeunload", cleanup);
+    };
+  }, []);
+
   return (
     <Box sx={{ width: "100vw", height: "100vh", position: "relative" }}>
       <Box
