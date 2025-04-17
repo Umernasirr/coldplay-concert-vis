@@ -42,27 +42,6 @@ const Galaxy = () => {
       >
         <GalaxyCanvas />
       </Box>
-
-      {/* <Fade in={showMessage} timeout={2000}>
-        <Typography
-          variant="h2"
-          sx={{
-            position: "absolute",
-            bottom: "50%",
-            textAlign: "center",
-            color: "#fff",
-            textShadow: "0 0 4px #fff",
-            zIndex: 3,
-            width: "100%",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            fontFamily: "Pacifico, 'cursive'",
-          }}
-        >
-          Have fun at the concert ✨🎶
-        </Typography>
-      </Fade> */}
     </Box>
   );
 };

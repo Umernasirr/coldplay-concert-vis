@@ -58,26 +58,26 @@ const Home = () => {
           <Sparkles
             count={400}
             scale={80}
-            size={4}
-            speed={1.5}
+            size={10}
+            speed={1}
             color={"#ffffff"}
             opacity={0.9}
           />
           <Sparkles
-            count={120}
+            count={200}
             scale={80}
-            size={6}
-            speed={0.6}
+            size={60}
+            speed={2}
             color={"#ff00cc"}
-            opacity={0.6}
+            opacity={0.7}
           />
           <Sparkles
             count={120}
             scale={80}
-            size={6}
+            size={60}
             speed={0.4}
             color={"#00eaff"}
-            opacity={0.5}
+            opacity={1}
           />
         </Canvas>
       </Box>
@@ -111,14 +111,14 @@ const Home = () => {
               backgroundSize: "600% 100%",
               WebkitBackgroundClip: "text",
               WebkitTextFillColor: "transparent",
-              animation: `${shimmer} 6s linear infinite`,
+              animation: `${shimmer} 15s linear infinite`,
               fontFamily: "Delius, 'cursive'",
               fontSize: { xs: "2rem", md: "3.5rem" },
               lineHeight: 1.2,
-              animationDelay: "40s",
+              animationDelay: "0s",
               animationTimingFunction: "ease-in-out",
               animationDirection: "alternate",
-              animationIterationCount: "infinite",
+              // animationIterationCount: "infinite",
               textShadow: "0 0 20px rgba(255,255,255,0.3)",
             }}
           >
@@ -157,7 +157,7 @@ const Home = () => {
             },
           }}
         >
-          ARE YOU READY TO ENTER
+          ARE YOU READY TO ENTER?
         </Button>
       </Box>
     </Box>

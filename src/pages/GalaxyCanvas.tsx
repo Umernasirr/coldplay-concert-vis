@@ -2,8 +2,9 @@
 import React, { useRef, useState, useEffect } from "react";
 import { Canvas, useFrame, useLoader } from "@react-three/fiber";
 import { Stars as DreiStars, Sparkles, useCursor } from "@react-three/drei";
-import { TextureLoader, Vector3, AdditiveBlending, Sprite } from "three";
+import { TextureLoader, Vector3, AdditiveBlending, Sprite, Color } from "three";
 import { motion } from "framer-motion";
+import { keyframes } from "@emotion/react";
 import { Box, Typography } from "@mui/material";
 import confetti from "canvas-confetti";
 import { Fireworks } from "fireworks-js";
@@ -19,19 +20,28 @@ import P5 from "../assets/p5.png";
 import P6 from "../assets/p6.png";
 import P7 from "../assets/p7.png";
 import P8 from "../assets/p8.png";
+import toast from "react-hot-toast";
 
+const shimmer = keyframes`
+  0% { background-position: -500% 0; }
+  100% { background-position: 500% 0; }
+`;
+
+// 🌟 Enhanced Pulsing Sprite
 const PulsingSprite: React.FC<{
   position: Vector3;
   textureUrl: string;
   isClickable?: boolean;
   onClick?: () => void;
-  isStar?: boolean;
+  shouldPulse?: boolean;
+  scaleMultiplier?: number;
 }> = ({
   position,
   textureUrl,
   isClickable = false,
   onClick,
-  isStar = false,
+  shouldPulse = false,
+  scaleMultiplier = 1,
 }) => {
   const ref = useRef<Sprite>(null);
   const texture = useLoader(TextureLoader, textureUrl);
@@ -42,24 +52,25 @@ const PulsingSprite: React.FC<{
     if (!ref.current) return;
     pulse.current += delta;
 
-    const baseScale = isStar ? 1.5 : 1.2;
-    const scale = isStar
+    const t = state.clock.getElapsedTime();
+    const baseScale = 1.5 * scaleMultiplier;
+    const scale = shouldPulse
       ? baseScale + 0.4 * Math.sin(pulse.current * 3)
       : baseScale;
 
     ref.current.scale.set(scale, scale, scale);
 
-    if (ref.current.material && isStar) {
+    if (shouldPulse && ref.current.material) {
       ref.current.material.color.setStyle(
-        `hsl(${Math.sin(pulse.current * 2) * 50 + 50}, 100%, 75%)`
+        `hsl(${Math.sin(pulse.current * 3) * 50 + 50}, 100%, 75%)`
       );
+    } else if (ref.current.material) {
+      ref.current.material.color = new Color(1, 1, 1); // white
     }
 
-    if (!isStar) {
-      const t = state.clock.getElapsedTime();
-      ref.current.position.y = position.y + Math.sin(t + position.x) * 0.1;
-      ref.current.rotation.z += 0.001;
-    }
+    // Float + rotation = fake 3D feel
+    ref.current.rotation.z += 4;
+    ref.current.position.y = position.y + Math.sin(t + position.x) * 0.2;
   });
 
   return (
@@ -85,8 +96,8 @@ const RotatingGalaxy: React.FC<{ children: React.ReactNode }> = ({
   const groupRef = useRef<any>(null);
   useFrame((_, delta) => {
     if (groupRef.current) {
-      groupRef.current.rotation.y += delta * 0.005;
-      groupRef.current.rotation.x += delta * 0.002;
+      groupRef.current.rotation.y += delta * 0.0;
+      groupRef.current.rotation.x += delta * 0.0005;
     }
   });
   return <group ref={groupRef}>{children}</group>;
@@ -137,7 +148,17 @@ const GalaxyExperience = () => {
           spread: 70,
           origin: { y: 0.6 },
         });
-      }, 2000);
+        confetti({
+          particleCount: 200,
+          spread: 100,
+          origin: { y: 0.9 },
+        });
+        confetti({
+          particleCount: 50,
+          spread: 70,
+          origin: { y: 0.2 },
+        });
+      }, 1000);
     }
 
     setShowMessage(true);
@@ -151,16 +172,15 @@ const GalaxyExperience = () => {
   }, []);
 
   const planetData = [
-    { name: "Sun", url: Sun, pos: new Vector3(-10, 5, -12) },
-    { name: "Mercury", url: P1, pos: new Vector3(-7, -2, -9) },
-    { name: "Venus", url: P2, pos: new Vector3(-4, 4, -8) },
-    { name: "Earth", url: P3, pos: new Vector3(0, -5, -10) },
-    { name: "Mars", url: P4, pos: new Vector3(4, 2, -9) },
-    { name: "Saturn", url: P5, pos: new Vector3(9, -3, -8), clickable: true },
-    { name: "Jupiter", url: P6, pos: new Vector3(6, 6, -10), clickable: true },
-    { name: "Uranus", url: P7, pos: new Vector3(-9, -5, -10), clickable: true },
-    { name: "Neptune", url: P8, pos: new Vector3(10, 4, -9), clickable: true },
-    { name: "Pluto", url: P3, pos: new Vector3(3, -7, -8), clickable: true },
+    { name: "Sun", url: Sun, pos: new Vector3(-8, 5, 1) },
+    { name: "Mercury", url: P1, pos: new Vector3(-14, -1, -9) },
+    { name: "Venus", url: P2, pos: new Vector3(1, -8, -2) },
+    { name: "Earth", url: P5, pos: new Vector3(10, -5, -3) },
+    { name: "Mars", url: P4, pos: new Vector3(20, 2, -9) },
+    { name: "Saturn", url: P3, pos: new Vector3(2, -3, -5), clickable: true },
+    { name: "Jupiter", url: P6, pos: new Vector3(12, 6, -10) },
+    { name: "Uranus", url: P7, pos: new Vector3(-9, -2, -10) },
+    { name: "Neptune", url: P8, pos: new Vector3(12, 4, 1) },
   ];
 
   const starPositions = [
@@ -204,9 +224,15 @@ const GalaxyExperience = () => {
             fontSize: "2.8rem",
             fontWeight: "bold",
             color: "white",
-            background: "linear-gradient(90deg, #ff66cc, #66ffff)",
+            // background: "linear-gradient(90deg, #ff66cc, #66ffff)",
+            background: `linear-gradient(270deg, #ff00cc, #ffeb3b, #00eaff, #ff00cc)`,
+            backgroundSize: "600% 100%",
             WebkitBackgroundClip: "text",
             WebkitTextFillColor: "transparent",
+            animation: `${shimmer} 15s linear infinite`,
+
+            // WebkitBackgroundClip: "text",
+            // WebkitTextFillColor: "transparent",
             fontFamily: "Delius, cursive",
             pointerEvents: "none",
             zIndex: 3,
@@ -228,7 +254,7 @@ const GalaxyExperience = () => {
             top: 100,
             width: "100%",
             textAlign: "center",
-            fontSize: "2.8rem",
+            fontSize: "2rem",
             fontWeight: "bold",
             color: "white",
             background: "linear-gradient(90deg, #ff66cc, #66ffff)",
@@ -239,7 +265,7 @@ const GalaxyExperience = () => {
             zIndex: 3,
           }}
         >
-          Such a heavenly view
+          Such a heavenly view ✨
         </Typography>
       </motion.div>
 
@@ -251,7 +277,7 @@ const GalaxyExperience = () => {
         <Box
           sx={{
             position: "absolute",
-            top: 150,
+            top: 160,
             width: "100%",
             textAlign: "center",
             zIndex: 3,
@@ -275,7 +301,7 @@ const GalaxyExperience = () => {
               boxShadow: "0 0 10px rgba(255,255,255,0.2)",
             }}
           >
-            ▶️ Play Coldplay Vibes
+            ▶ Play Coldplay Vibes
           </button>
         </Box>
       </motion.div>
@@ -332,8 +358,15 @@ const GalaxyExperience = () => {
                 position={planet.pos}
                 textureUrl={planet.url}
                 isClickable={planet.clickable}
-                onClick={planet.clickable ? handleSaturnClick : undefined}
-                isStar={false}
+                onClick={
+                  planet.clickable
+                    ? handleSaturnClick
+                    : () => {
+                        toast.error("ruh oh, wrong star");
+                      }
+                }
+                shouldPulse={planet.name === "Saturn"}
+                scaleMultiplier={planet.name === "Saturn" ? 1.3 : 1.3}
               />
             ))}
 
@@ -343,9 +376,16 @@ const GalaxyExperience = () => {
                 key={index}
                 position={pos}
                 textureUrl={Star}
-                isClickable={index === 3}
-                onClick={index === 3 ? handleStarClick : undefined}
-                isStar={true}
+                isClickable={true}
+                onClick={
+                  index === 3
+                    ? handleStarClick
+                    : () => {
+                        toast.error("ruh oh, wrong star 🌠", { icon: "❌" });
+                      }
+                }
+                shouldPulse={index === 3}
+                scaleMultiplier={index === 3 ? 1.4 : 1}
               />
             ))}
         </RotatingGalaxy>
@@ -369,7 +409,7 @@ const GalaxyExperience = () => {
             zIndex: 10,
           }}
         >
-          Have fun at the concert ✨🎶
+          Have fun at the concert bestie ✨🎶
         </motion.div>
       )}
     </Box>
