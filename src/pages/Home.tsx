@@ -143,11 +143,11 @@ const Home = () => {
           />
           <Sparkles
             count={200}
-            scale={80}
-            size={80}
+            scale={100}
+            size={70}
             speed={1}
             color={"#ff00cc"}
-            opacity={0.7}
+            opacity={0.8}
           />
           <Sparkles
             count={120}
@@ -155,7 +155,7 @@ const Home = () => {
             size={50}
             speed={0.4}
             color={"#00eaff"}
-            opacity={1}
+            opacity={0.4}
           />
         </Canvas>
       </Box>
