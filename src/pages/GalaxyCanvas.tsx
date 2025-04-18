@@ -4,7 +4,7 @@ import React, { useRef, useState, useEffect } from "react";
 import { Canvas, useFrame, useLoader } from "@react-three/fiber";
 import { Stars as DreiStars, Sparkles, useCursor } from "@react-three/drei";
 import { TextureLoader, Vector3, AdditiveBlending, Sprite, Color } from "three";
-import { motion } from "framer-motion";
+import { motion } from "framer-motion-3d";
 import { keyframes } from "@emotion/react";
 import { Box, Typography } from "@mui/material";
 import confetti from "canvas-confetti";
@@ -66,6 +66,7 @@ const PulsingSprite: React.FC<{
   const ref = useRef<Sprite>(null);
   const texture = useLoader(TextureLoader, textureUrl);
   const pulse = useRef(0);
+
   useCursor(isClickable);
 
   useFrame((state, delta) => {
@@ -141,7 +142,32 @@ const GalaxyExperience = () => {
     document.removeEventListener("keydown", tryPlayAudio);
   };
 
-  const handleSaturnClick = () => setStep(2);
+  // const [visibleItems, setVisibleItems] = useState<number>(0);
+  const [transitioning, setTransitioning] = useState(false);
+
+  const handleSaturnClick = () => {
+    setTransitioning(true);
+    setTimeout(() => {
+      setStep(2);
+      // setVisibleItems(0); // reset for stars
+      setTransitioning(false);
+    }, 800); // wait for fade-out
+  };
+
+  // useEffect(() => {
+  //   if (transitioning) return;
+
+  //   let count = 0;
+  //   const max = step === 1 ? planetData.length : starPositions.length;
+
+  //   const interval = setInterval(() => {
+  //     count++;
+  //     setVisibleItems((prev) => Math.min(prev + 1, max));
+  //     if (count >= max) clearInterval(interval);
+  //   }, 200);
+
+  //   return () => clearInterval(interval);
+  // }, [step, transitioning]);
 
   const handleStarClick = () => {
     if (fireworksContainerRef.current && !fireworksInstanceRef.current) {
@@ -229,8 +255,8 @@ const GalaxyExperience = () => {
   const starPositions = [
     new Vector3(5, 8, -10),
     new Vector3(0, -6, -4),
-    new Vector3(10, 5, -8),
-    new Vector3(12, -8, -5),
+    new Vector3(3, 2, -8),
+    new Vector3(9, -3, -5),
     new Vector3(-7, -7, -6),
     new Vector3(-10, 8, -7),
     new Vector3(8, -10, -7),
@@ -423,43 +449,74 @@ const GalaxyExperience = () => {
             saturation={0.5}
           />
 
-          {step === 1 &&
-            planetData.map((planet, index) => (
-              <PulsingSprite
-                key={index}
-                position={planet.pos}
-                textureUrl={planet.url}
-                isClickable={planet.clickable}
-                onClick={
-                  planet.clickable
-                    ? handleSaturnClick
-                    : () => {
-                        toast.error("ruh oh, wrong star");
-                      }
-                }
-                shouldPulse={planet.name === "Saturn"}
-                scaleMultiplier={planet.name === "Saturn" ? 1.1 : 1.3}
-              />
-            ))}
+          {step === 1 && (
+            <motion.group
+              initial={{ opacity: 1 }}
+              animate={{ opacity: transitioning ? 0 : 1 }}
+              transition={{ duration: 0.8 }}
+            >
+              {planetData.map((planet, index) => (
+                <motion.group
+                  key={index}
+                  initial={{ opacity: 0, scale: 0.4 }}
+                  animate={{ opacity: 1, scale: 1.1 }}
+                  transition={{
+                    delay: index * 0.2,
+                    duration: 0.6,
+                    ease: "easeOut",
+                  }}
+                >
+                  <PulsingSprite
+                    position={planet.pos}
+                    textureUrl={planet.url}
+                    isClickable={planet.clickable}
+                    onClick={
+                      planet.clickable
+                        ? handleSaturnClick
+                        : () => toast.error("ruh oh, wrong star")
+                    }
+                    shouldPulse={planet.name === "Saturn"}
+                    scaleMultiplier={planet.name === "Saturn" ? 1.1 : 1.3}
+                  />
+                </motion.group>
+              ))}
+            </motion.group>
+          )}
 
-          {step === 2 &&
-            starPositions.map((pos, index) => (
-              <PulsingSprite
-                key={index}
-                position={pos}
-                textureUrl={Star}
-                isClickable={true}
-                onClick={
-                  index === 3
-                    ? handleStarClick
-                    : () => {
-                        toast.error("ruh oh, wrong star 🌠", { icon: "❌" });
-                      }
-                }
-                shouldPulse={index === 3}
-                scaleMultiplier={index === 3 ? 1 : 0.8}
-              />
-            ))}
+          {step === 2 && (
+            <motion.group
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.8 }}
+            >
+              {starPositions.map((pos, index) => (
+                <motion.group
+                  key={index}
+                  initial={{ opacity: 0, scale: 0.5 }}
+                  animate={{ opacity: 1, scale: 1.5 }}
+                  transition={{
+                    delay: index * 0.2,
+                    duration: 0.6,
+                    ease: "easeOut",
+                  }}
+                >
+                  <PulsingSprite
+                    position={pos}
+                    textureUrl={Star}
+                    isClickable={true}
+                    onClick={
+                      index === 3
+                        ? handleStarClick
+                        : () =>
+                            toast.error("ruh oh, wrong star 🌠", { icon: "❌" })
+                    }
+                    shouldPulse={index === 3}
+                    scaleMultiplier={index === 3 ? 1 : 0.8}
+                  />
+                </motion.group>
+              ))}
+            </motion.group>
+          )}
         </RotatingGalaxy>
       </Canvas>
 

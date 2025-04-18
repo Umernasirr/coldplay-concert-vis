@@ -18,6 +18,7 @@
     "canvas-confetti": "^1.9.3",
     "fireworks-js": "^2.10.8",
     "framer-motion": "^12.7.3",
+    "framer-motion-3d": "^12.4.13",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-hot-toast": "^2.5.2",
