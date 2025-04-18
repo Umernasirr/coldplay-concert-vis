@@ -24,10 +24,28 @@ import P8 from "../assets/p8.png";
 import P9 from "../assets/p9.png";
 import toast from "react-hot-toast";
 
+import confettiMP3 from "../assets/confetti.mp3"; // Adjust the path if needed
+const confettiSound = new Audio(confettiMP3);
+confettiSound.volume = 0.4;
+
+import crowdMP3 from "../assets/crowd.mp3"; // Adjust the path if needed
+const crowdSound = new Audio(crowdMP3);
+crowdSound.volume = 0.2;
+crowdSound.loop = true;
+
+import fireworks from "../assets/fireworks.mp3"; // Adjust the path if needed
+const fireworksSound = new Audio(fireworks);
+fireworksSound.volume = 0.2;
+fireworksSound.loop = true;
+
 const shimmer = keyframes`
   0% { background-position: -500% 0; }
   100% { background-position: 500% 0; }
 `;
+
+const scalar = 2;
+const cat1 = confetti.shapeFromText({ text: "😺", scalar });
+const cat2 = confetti.shapeFromText({ text: "😼", scalar });
 
 // 🌟 Enhanced Pulsing Sprite
 const PulsingSprite: React.FC<{
@@ -110,7 +128,7 @@ const GalaxyExperience = () => {
   const [showMessage, setShowMessage] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(new Audio(song));
   const audio = audioRef.current;
-  audio.volume = 0.2;
+  audio.volume = 0.4;
 
   const fireworksContainerRef = useRef<HTMLDivElement>(null);
   const fireworksInstanceRef = useRef<Fireworks | null>(null);
@@ -143,18 +161,40 @@ const GalaxyExperience = () => {
       fireworksInstanceRef.current.start();
     }
 
+    fireworksSound.play().catch(() => {});
+    crowdSound.play().catch(() => {});
+
     if (!intervalRef.current) {
       intervalRef.current = setInterval(() => {
+        confettiSound.currentTime = 0; // rewind to start in case it's still playing
+        confettiSound.play().catch(() => {});
         confetti({
           particleCount: 100,
           spread: 70,
           origin: { y: 0.6 },
         });
+
+        const defaults = {
+          spread: 360,
+          ticks: 90,
+          gravity: 0,
+          decay: 0.96,
+          startVelocity: 20,
+          shapes: [cat1, cat2],
+          scalar,
+        };
+
         confetti({
-          particleCount: 100,
-          spread: 100,
-          origin: { y: 0.9 },
+          ...defaults,
+          particleCount: 30,
         });
+
+        confetti({
+          ...defaults,
+          particleCount: 20,
+          flat: true,
+        });
+
         confetti({
           particleCount: 50,
           spread: 70,
@@ -188,14 +228,14 @@ const GalaxyExperience = () => {
 
   const starPositions = [
     new Vector3(5, 8, -10),
-    new Vector3(0, -6, -7),
+    new Vector3(0, -6, -4),
     new Vector3(10, 5, -8),
     new Vector3(12, -8, -5),
     new Vector3(-7, -7, -6),
     new Vector3(-10, 8, -7),
     new Vector3(8, -10, -7),
     new Vector3(-12, 6, -10),
-    new Vector3(4, 10, -6),
+    new Vector3(13, 8, -6),
     new Vector3(-5, 4, -7),
     new Vector3(-8, 10, -5),
   ];
@@ -283,7 +323,7 @@ const GalaxyExperience = () => {
           variant="h3"
           sx={{
             position: "absolute",
-            top: 100,
+            top: 120,
             width: "100%",
             textAlign: "center",
             fontSize: "2rem",
@@ -309,7 +349,7 @@ const GalaxyExperience = () => {
         <Box
           sx={{
             position: "absolute",
-            top: 160,
+            top: 180,
             width: "100%",
             textAlign: "center",
             zIndex: 3,
@@ -352,10 +392,10 @@ const GalaxyExperience = () => {
           />
           <Sparkles
             count={200}
-            speed={0.7}
+            speed={1.5}
             opacity={0.4}
-            scale={50}
-            size={50}
+            scale={90}
+            size={80}
             color="#ff007f"
           />
           <Sparkles
@@ -436,12 +476,12 @@ const GalaxyExperience = () => {
             fontSize: "3rem",
             fontWeight: "bold",
             color: "#fff",
-            textShadow: "0 0 20px #fff",
+            textShadow: "0 0 10px #fff",
             fontFamily: "Pacifico, cursive",
             zIndex: 10,
           }}
         >
-          Have fun at the concert bestie ✨🎶
+          Have an amazing concert! ✨🎶
         </motion.div>
       )}
 
