@@ -75,14 +75,14 @@ const PulsingSprite: React.FC<{
     const t = state.clock.getElapsedTime();
     const baseScale = 1.5 * scaleMultiplier;
     const scale = shouldPulse
-      ? baseScale + 0.4 * Math.sin(pulse.current * 3)
+      ? baseScale + 0.1 * Math.sin(pulse.current * 3)
       : baseScale;
 
     ref.current.scale.set(scale, scale, scale);
 
     if (shouldPulse && ref.current.material) {
       ref.current.material.color.setStyle(
-        `hsl(${Math.sin(pulse.current * 3) * 50 + 50}, 100%, 75%)`
+        `hsl(${Math.sin(pulse.current * 1) * 50 + 50}, 100%, 75%)`
       );
     } else if (ref.current.material) {
       ref.current.material.color = new Color(1, 1, 1); // white
@@ -470,10 +470,10 @@ const GalaxyExperience = () => {
           transition={{ duration: 2 }}
           style={{
             position: "absolute",
-            bottom: "40%",
+            bottom: "45%",
             width: "100%",
             textAlign: "center",
-            fontSize: "3rem",
+            fontSize: "4rem",
             fontWeight: "bold",
             color: "#fff",
             textShadow: "0 0 10px #fff",

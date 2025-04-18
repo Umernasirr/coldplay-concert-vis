@@ -1,10 +1,36 @@
-import { Button, Box, Typography, Stack } from "@mui/material";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Button, Box, Typography, Stack } from "@mui/material";
 import { Canvas } from "@react-three/fiber";
 import { Sparkles } from "@react-three/drei";
 import { keyframes } from "@emotion/react";
 import { motion } from "framer-motion";
 
+// 🔮 Portal Component
+const PortalTransition = () => (
+  <motion.div
+    initial={{ scale: 0, opacity: 0 }}
+    animate={{ scale: 50, opacity: 1 }}
+    exit={{ opacity: 0 }}
+    transition={{ duration: 1.3, ease: "easeInOut" }}
+    style={{
+      position: "fixed",
+      top: "50%",
+      left: "50%",
+      width: "160px",
+      height: "160px",
+      transform: "translate(-50%, -50%)",
+      borderRadius: "50%",
+      background: "radial-gradient(circle,rgb(67, 5, 115) 0%, #000000 80%)",
+      zIndex: 9999,
+      boxShadow:
+        "0 0 60px 20pxrgba(255, 19, 255, 0.96), inset 0 0 40px rgba(191, 0, 255, 0.71)",
+      pointerEvents: "none",
+    }}
+  />
+);
+
+// 🌈 Animations
 const shimmer = keyframes`
   0% { background-position: -500% 0; }
   100% { background-position: 500% 0; }
@@ -21,9 +47,13 @@ const glowPulse = keyframes`
 
 const Home = () => {
   const navigate = useNavigate();
+  const [showPortal, setShowPortal] = useState(false);
 
   const handleEnter = () => {
-    navigate("/galaxy");
+    setShowPortal(true);
+    setTimeout(() => {
+      navigate("/galaxy");
+    }, 1300); // Match duration of portal
   };
 
   return (
@@ -45,8 +75,8 @@ const Home = () => {
         backgroundBlendMode: "screen",
       }}
     >
-      {/* Sparkle Stars in 3D */}
-      <Box
+      {/* ✨ Sparkle Stars in 3D */}
+      {/* <Box
         sx={{
           position: "absolute",
           inset: 0,
@@ -80,9 +110,60 @@ const Home = () => {
             opacity={1}
           />
         </Canvas>
+      </Box> */}
+
+      <Box
+        sx={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          width: "100vw",
+          height: "100vh",
+          zIndex: 0,
+          pointerEvents: "none", // optional if you want it non-interactive
+        }}
+      >
+        <Canvas
+          style={{
+            width: "100vw",
+            height: "100vh",
+          }}
+          camera={{ position: [0, 0, 10] }}
+        >
+          <ambientLight intensity={0.9} />
+          <Sparkles
+            count={900}
+            scale={100}
+            size={10}
+            speed={1}
+            color={"#ffffff"}
+            opacity={0.9}
+          />
+          <Sparkles
+            count={200}
+            scale={80}
+            size={80}
+            speed={1}
+            color={"#ff00cc"}
+            opacity={0.7}
+          />
+          <Sparkles
+            count={120}
+            scale={80}
+            size={50}
+            speed={0.4}
+            color={"#00eaff"}
+            opacity={1}
+          />
+        </Canvas>
       </Box>
 
-      {/* Main Content */}
+      {/* 🌌 Portal Animation Overlay */}
+      {showPortal && <PortalTransition />}
+
+      {/* 🌟 Main Content */}
       <Box
         sx={{
           position: "relative",
@@ -118,11 +199,10 @@ const Home = () => {
               animationDelay: "0s",
               animationTimingFunction: "ease-in-out",
               animationDirection: "alternate",
-              // animationIterationCount: "infinite",
               textShadow: "0 0 20px rgba(255,255,255,0.3)",
             }}
           >
-            Welcome to the Coldplay Concert Website
+            Welcome to the Coldplay HYPE
           </Typography>
           <Typography
             variant="h2"

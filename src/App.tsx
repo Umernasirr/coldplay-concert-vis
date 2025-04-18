@@ -1,18 +1,30 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  useLocation,
+} from "react-router-dom";
 import Home from "./pages/Home";
 import Galaxy from "./pages/Galaxy";
+import { AnimatePresence } from "framer-motion";
 
-function App() {
+const AppRoutes = () => {
+  const location = useLocation();
+
   return (
-    <>
-      <Router>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/galaxy" element={<Galaxy />} />
-        </Routes>
-      </Router>
-    </>
+    <AnimatePresence mode="wait">
+      <Routes location={location} key={location.pathname}>
+        <Route path="/" element={<Home />} />
+        <Route path="/galaxy" element={<Galaxy />} />
+      </Routes>
+    </AnimatePresence>
   );
-}
+};
+
+const App = () => (
+  <Router>
+    <AppRoutes />
+  </Router>
+);
 
 export default App;
