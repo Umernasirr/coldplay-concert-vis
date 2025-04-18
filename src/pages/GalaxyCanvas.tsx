@@ -151,7 +151,7 @@ const GalaxyExperience = () => {
           origin: { y: 0.6 },
         });
         confetti({
-          particleCount: 200,
+          particleCount: 100,
           spread: 100,
           origin: { y: 0.9 },
         });
@@ -160,7 +160,7 @@ const GalaxyExperience = () => {
           spread: 70,
           origin: { y: 0.2 },
         });
-      }, 1000);
+      }, 2000);
     }
 
     setShowMessage(true);
@@ -352,17 +352,17 @@ const GalaxyExperience = () => {
           />
           <Sparkles
             count={200}
-            speed={1}
+            speed={0.7}
             opacity={0.4}
-            scale={90}
-            size={40}
+            scale={50}
+            size={50}
             color="#ff007f"
           />
           <Sparkles
             count={100}
             speed={0.8}
             opacity={0.3}
-            scale={120}
+            scale={100}
             size={30}
             color="#00ffff"
           />
@@ -370,14 +370,14 @@ const GalaxyExperience = () => {
             count={50}
             speed={0.6}
             opacity={0.9}
-            scale={110}
+            scale={90}
             size={80}
             color="#ffff99"
           />
           <DreiStars
-            radius={300}
-            depth={200}
-            count={4000}
+            radius={10}
+            depth={100}
+            count={400}
             factor={10}
             fade
             saturation={0.5}
@@ -417,7 +417,7 @@ const GalaxyExperience = () => {
                       }
                 }
                 shouldPulse={index === 3}
-                scaleMultiplier={index === 3 ? 1.4 : 1}
+                scaleMultiplier={index === 3 ? 1 : 0.8}
               />
             ))}
         </RotatingGalaxy>
@@ -444,6 +444,26 @@ const GalaxyExperience = () => {
           Have fun at the concert bestie ✨🎶
         </motion.div>
       )}
+
+      <Typography
+        variant="body1"
+        sx={{
+          position: "absolute",
+          bottom: 20,
+          right: 20,
+          fontSize: "1.2rem",
+          fontFamily: "Delius, cursive",
+          background: "linear-gradient(90deg, #ffd6ff, #caffbf, #9bf6ff)",
+          WebkitBackgroundClip: "text",
+          WebkitTextFillColor: "transparent",
+          textShadow: "0 0 8px rgba(255, 255, 255, 0.5)",
+          animation: `${shimmer} 10s linear infinite`,
+          zIndex: 5,
+          pointerEvents: "none",
+        }}
+      >
+        ✨ Find your guiding light
+      </Typography>
     </Box>
   );
 };
