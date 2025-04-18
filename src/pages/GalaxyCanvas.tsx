@@ -21,6 +21,7 @@ import P5 from "../assets/p5.png";
 import P6 from "../assets/p6.png";
 import P7 from "../assets/p7.png";
 import P8 from "../assets/p8.png";
+import P9 from "../assets/p9.png";
 import toast from "react-hot-toast";
 
 const shimmer = keyframes`
@@ -182,6 +183,7 @@ const GalaxyExperience = () => {
     { name: "Jupiter", url: P6, pos: new Vector3(12, 6, -10) },
     { name: "Uranus", url: P7, pos: new Vector3(-9, -2, -10) },
     { name: "Neptune", url: P8, pos: new Vector3(12, 4, 1) },
+    { name: "Planert", url: P9, pos: new Vector3(1, 4, -4) },
   ];
 
   const starPositions = [
@@ -396,7 +398,7 @@ const GalaxyExperience = () => {
                       }
                 }
                 shouldPulse={planet.name === "Saturn"}
-                scaleMultiplier={planet.name === "Saturn" ? 1.3 : 1.3}
+                scaleMultiplier={planet.name === "Saturn" ? 1.1 : 1.3}
               />
             ))}
 

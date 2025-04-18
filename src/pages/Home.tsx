@@ -54,9 +54,9 @@ const Home = () => {
         }}
       >
         <Canvas camera={{ position: [0, 0, 10] }}>
-          <ambientLight intensity={0.7} />
+          <ambientLight intensity={0.9} />
           <Sparkles
-            count={400}
+            count={900}
             scale={80}
             size={10}
             speed={1}
@@ -66,15 +66,15 @@ const Home = () => {
           <Sparkles
             count={200}
             scale={80}
-            size={60}
-            speed={2}
+            size={80}
+            speed={1}
             color={"#ff00cc"}
             opacity={0.7}
           />
           <Sparkles
             count={120}
             scale={80}
-            size={60}
+            size={50}
             speed={0.4}
             color={"#00eaff"}
             opacity={1}
@@ -126,7 +126,7 @@ const Home = () => {
           </Typography>
           <Typography
             variant="h2"
-            sx={{ mb: 3, animation: `${glowPulse} 2s infinite` }}
+            sx={{ mb: 3, ml: 4, animation: `${glowPulse} 2s infinite` }}
           >
             🌌
           </Typography>
